@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import filesize from 'filesize';
@@ -12,6 +12,8 @@ import { Container, Title, ImportFileContainer, Footer } from './styles';
 import alert from '../../assets/alert.svg';
 import api from '../../services/api';
 
+import { Transaction } from '../Dashboard/index';
+
 interface FileProps {
   file: File;
   name: string;
@@ -22,20 +24,46 @@ const Import: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<FileProps[]>([]);
   const history = useHistory();
 
-  async function handleUpload(): Promise<void> {
-    // const data = new FormData();
+  // useEffect(() => console.log(uploadedFiles), [uploadedFiles]);
 
-    // TODO
+  async function handleUpload(): Promise<void> {
+    const data = new FormData();
 
     try {
-      // await api.post('/transactions/import', data);
+      // https://css-tricks.com/why-using-reduce-to-sequentially-resolve-promises-works/
+      await uploadedFiles.reduce(
+        async (
+          prevTransactionPromise: Promise<any>,
+          nextTransactionCSV,
+          index,
+        ) => {
+          await prevTransactionPromise;
+
+          data.set('importCSV', uploadedFiles[index].file);
+
+          const response = await api.post('/transactions/import', data);
+
+          const transactions: Transaction[] = response.data;
+
+          return transactions;
+        },
+        Promise.resolve(),
+      );
+
+      setUploadedFiles([]);
+      window.alert('Arquivos subidos com sucesso');
     } catch (err) {
-      // console.log(err.response.error);
+      console.log(err.response.error);
     }
   }
 
   function submitFile(files: File[]): void {
-    // TODO
+    const filesToUpload = files.map(file => ({
+      file,
+      name: file.name,
+      readableSize: filesize(file.size),
+    }));
+    setUploadedFiles(filesToUpload);
   }
 
   return (

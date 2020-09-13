@@ -6,7 +6,7 @@ interface ContainerProps {
 
 export const Container = styled.div<ContainerProps>`
   background: #5636d3;
-  padding: 30px 0;
+  padding: 30px 0px;
 
   header {
     width: 1120px;
@@ -25,6 +25,7 @@ export const Container = styled.div<ContainerProps>`
 
         & + a {
           margin-left: 32px;
+          opacity: 0.8;
         }
 
         &:hover {

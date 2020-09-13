@@ -37,7 +37,7 @@ export const Footer = styled.section`
     color: #969cb3;
 
     img {
-      margin-right: 5px;
+      margin-right: 13px;
     }
   }
 

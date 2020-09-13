@@ -23,7 +23,7 @@ export const CardContainer = styled.section`
   margin-top: -150px;
 `;
 
-export const Card = styled.div`
+export const Card = styled.div<CardProps>`
   background: ${({ total }: CardProps): string => (total ? '#FF872C' : '#fff')};
   padding: 22px 32px;
   border-radius: 5px;
